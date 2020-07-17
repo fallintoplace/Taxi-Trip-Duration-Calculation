@@ -24,7 +24,7 @@ TARGET = 'trip_duration'
 TRAIN_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\train.csv"
 FINAL_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\test.csv"
 RESULT_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\result.csv"
-NROWS = 625136
+NROWS = 22513
 MAXNROWS = 625135
 DATETIME = 'pickup_datetime'
 DROPOFFDATETIME = 'dropoff_datetime'
@@ -66,7 +66,7 @@ dataset.pop(DROPOFFDATETIME)
 dataset.pop(KEY)
 
 dataset = dataset.sample(frac=1).reset_index(drop=True)
-dataset[TARGET] = dataset[TARGET] / 10000
+dataset[TARGET] = dataset[TARGET]
 
 train_dataset = dataset.sample(frac=0.9,random_state=0)
 test_dataset = dataset.drop(train_dataset.index)
@@ -138,7 +138,7 @@ history = model.fit(
 
 plt.plot(history.history["loss"], label="Training Loss")
 plt.plot(history.history["val_loss"], label="Validation Loss")
-plt.ylim([0, 5])
+plt.ylim([0, 40])
 plt.legend()
 plt.show()
 
@@ -151,7 +151,7 @@ plt.axes(aspect = 'equal')
 plt.scatter(train_labels, train_predictions, s=1, color="b", label="Training")
 plt.xlabel('True Values')
 plt.ylabel('Predictions')
-lims = [0, 100]
+lims = [0, 5000]
 plt.xlim(lims)
 plt.ylim(lims)
 plt.legend()
@@ -165,7 +165,7 @@ plt.axes(aspect = 'equal')
 plt.scatter(test_labels, test_predictions, s=1, color="r", label="Test")
 plt.xlabel('True Values')
 plt.ylabel('Predictions')
-lims = [0, 5]
+lims = [0, 5000]
 plt.xlim(lims)
 plt.ylim(lims)
 plt.legend()
@@ -180,7 +180,7 @@ PRINTING THE RESULT
 result = pd.DataFrame()
 result[KEY] = final_key
 result[TARGET] = model.predict(final).flatten()
-result[TARGET] = result[TARGET] * 10000
+result[TARGET] = result[TARGET]
 result[TARGET] = result[TARGET].apply(lambda x: 1 if (x<1) else x)
 pd.DataFrame(result).to_csv(RESULT_URL, index = False)
 
