@@ -51,7 +51,8 @@ def process(file_url):
     dataset[DATETIME] = [datetime.strptime(x, "%Y-%m-%d %H:%M:%S") 
                                    for x in dataset[DATETIME]]
     dataset['hour'] = dataset[DATETIME].apply(lambda x: x.hour)
-    dataset['day'] = dataset[DATETIME].apply(lambda x: x.dayofyear)
+    dataset['minute'] = dataset[DATETIME].apply(lambda x: x.minute)
+    # dataset['day'] = dataset[DATETIME].apply(lambda x: x.dayofyear)
     dataset['weekday'] = dataset[DATETIME].apply(lambda x: x.weekday())
     dataset['week'] = dataset[DATETIME].apply(lambda x: x.week)
    
@@ -65,7 +66,7 @@ dataset.pop(DROPOFFDATETIME)
 dataset.pop(KEY)
 
 dataset = dataset.sample(frac=1).reset_index(drop=True)
-dataset[TARGET] = dataset[TARGET] / 1000
+dataset[TARGET] = dataset[TARGET] / 10000
 
 train_dataset = dataset.sample(frac=0.9,random_state=0)
 test_dataset = dataset.drop(train_dataset.index)
@@ -92,9 +93,11 @@ print(final.head())
 print(train_labels.head())
 
 """
-TWO DENSELY PRELU ACTIVATED CONNECTED LAYERS WITH DROPOUTS AND LAYER NORMALIZATIONS
+TWO DENSELY PRELU ACTIVATED CONNECTED LAYERS WITH DROPOUTS, REGULARIZATIONS
+AND LAYER NORMALIZATIONS
 
 """
+from tensorflow.keras.losses import MSLE
 
 def build_model():
     model = keras.Sequential([
@@ -111,7 +114,7 @@ def build_model():
         layers.Dense(1)
         ])
 
-    model.compile(loss = 'mse',
+    model.compile(loss = MSLE,
                 optimizer = tf.keras.optimizers.Adam(0.0005),
                 )
     return model
@@ -125,6 +128,8 @@ FITTING AND PLOTTING THE LOSS VALUE GRAPH
 
 """
 
+
+
 history = model.fit(
     train_dataset, train_labels,
     epochs = 1000, batch_size = 128, validation_split = 0.2, verbose = 1,
@@ -133,6 +138,7 @@ history = model.fit(
 
 plt.plot(history.history["loss"], label="Training Loss")
 plt.plot(history.history["val_loss"], label="Validation Loss")
+plt.ylim([0, 5])
 plt.legend()
 plt.show()
 
@@ -174,7 +180,7 @@ PRINTING THE RESULT
 result = pd.DataFrame()
 result[KEY] = final_key
 result[TARGET] = model.predict(final).flatten()
-result[TARGET] = result[TARGET] * 1000
+result[TARGET] = result[TARGET] * 10000
 result[TARGET] = result[TARGET].apply(lambda x: 1 if (x<1) else x)
 pd.DataFrame(result).to_csv(RESULT_URL, index = False)
 
