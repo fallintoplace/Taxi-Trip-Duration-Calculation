@@ -24,7 +24,7 @@ TARGET = 'trip_duration'
 TRAIN_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\train.csv"
 FINAL_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\test.csv"
 RESULT_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\result.csv"
-NROWS = 22513
+NROWS = 6251
 MAXNROWS = 625135
 DATETIME = 'pickup_datetime'
 DROPOFFDATETIME = 'dropoff_datetime'
@@ -133,12 +133,16 @@ FITTING AND PLOTTING THE LOSS VALUE GRAPH
 history = model.fit(
     train_dataset, train_labels,
     epochs = 1000, batch_size = 128, validation_split = 0.2, verbose = 1,
-    callbacks = [keras.callbacks.EarlyStopping(monitor = 'val_loss', patience = 20)],
+    callbacks = [keras.callbacks.ReduceLROnPlateau(monitor='val_loss', 
+                                            patience=5, 
+                                            verbose=1, 
+                                            factor=0.5, 
+                                            min_lr=0.00001)],
 )
 
 plt.plot(history.history["loss"], label="Training Loss")
 plt.plot(history.history["val_loss"], label="Validation Loss")
-plt.ylim([0, 40])
+plt.ylim([0, 2])
 plt.legend()
 plt.show()
 
