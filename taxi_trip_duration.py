@@ -24,7 +24,7 @@ TARGET = 'trip_duration'
 TRAIN_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\train.csv"
 FINAL_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\test.csv"
 RESULT_URL = "C:\\Users\\Minh\\Downloads\\nyc-taxi-trip-duration\\result.csv"
-NROWS = 625136
+NROWS = 6251
 MAXNROWS = 625135
 DATETIME = 'pickup_datetime'
 DROPOFFDATETIME = 'dropoff_datetime'
@@ -137,7 +137,7 @@ history = model.fit(
                                             patience=5, 
                                             verbose=1, 
                                             factor=0.2, 
-                                            min_lr=0.0001)],
+                                            min_lr=0.00005)],
 )
 
 plt.plot(history.history["loss"], label="Training Loss")
