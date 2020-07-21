@@ -136,7 +136,7 @@ history = model.fit(
     callbacks = [keras.callbacks.ReduceLROnPlateau(monitor='val_loss', 
                                             patience=5, 
                                             verbose=1, 
-                                            factor=0.2, 
+                                            factor=0.6, 
                                             min_lr=0.00005)],
 )
 
